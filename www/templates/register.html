@@ -1,28 +1,30 @@
 <ion-view view-title="Register">
     <ion-content class="padding">
+    <form name="registerForm" novalidate ng-submit="registerSubmitForm(registerForm)">
         <div class="list">
-            <label class="item item-input">
-                <input type="email" placeholder="Email">
+            <label class="item item-input" ng-class="{ 'has-errors' : registerForm.email.$invalid && registerForm.$submitted}">
+                <input ng_model="user.email" name="email" type="email" placeholder="Email" required>
+            </label>
+            <label class="item item-input" ng-class="{ 'has-errors' : registerForm.firstName.$invalid && registerForm.$submitted}">
+                <input ng_model="user.firstName" name="firstName" type="text" placeholder="First Name" required>
+            </label>
+            <label class="item item-input" ng-class="{ 'has-errors' : registerForm.lastName.$invalid && registerForm.$submitted}">
+                <input ng_model="user.lastName" name="lastName" type="text" placeholder="Last Name" required>
+            </label>
+            <label class="item item-input" ng-class="{ 'has-errors' : registerForm.organization.$invalid && registerForm.$submitted}">
+                <input ng_model="user.organization" name="organization" type="text" placeholder="Company (Optional)">
+            </label>
+            <label class="item item-input" ng-class="{ 'has-errors' : registerForm.password.$invalid && registerForm.$submitted}">
+                <input ng_model="user.password" name="password" type="password" placeholder="Password" required>
             </label>
             <label class="item item-input">
-                <input type="text" placeholder="First Name">
-            </label>
-            <label class="item item-input">
-                <input type="text" placeholder="Last Name">
-            </label>
-            <label class="item item-input">
-                <input type="text" placeholder="Company (Optional)">
-            </label>
-            <label class="item item-input">
-                <input type="password" placeholder="Password">
-            </label>
-            <label class="item item-input">
-                <input type="password" placeholder="Repeat password">
+                <input ng_model="repeatPwd.repeatPassword" name="repeatPassword" type="password" placeholder="Repeat password" required>
             </label>
         </div>
-        <button class="button button-block button-positive">
+        <button class="button button-block button-positive" type="submit">
             Sign up
         </button>
+    </form>
     </ion-content>
 </ion-view>
 
