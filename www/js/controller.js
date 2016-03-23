@@ -167,8 +167,8 @@ angular.module('starter.controllers', [])
     
 }])
 
-.controller('TestCtrl', ['$scope', 'testInfo', '$stateParams', '$state', '$window', 'TKQuestionsService', 'TKAnswersService', 'ServerAnswersService','$ionicHistory',
-    function($scope, testInfo, $stateParams, $state, $window, TKQuestionsService, TKAnswersService, ServerAnswersService, $ionicHistory) {
+.controller('TestCtrl', ['$scope', 'testInfo', '$stateParams', '$state', '$window', 'TKQuestionsService', 'TKAnswersService', 'ServerAnswersService','$ionicHistory','TKResultsButtonService',
+    function($scope, testInfo, $stateParams, $state, $window, TKQuestionsService, TKAnswersService, ServerAnswersService, $ionicHistory, TKResultsButtonService) {
         //testInfo is passed in the router to obtain the questions
         var qNumber = $stateParams.testID;
         $scope.title = "Question #"+qNumber;
@@ -188,6 +188,7 @@ angular.module('starter.controllers', [])
             if(nextqNumber>30) {
                 performRequest();
             }else {
+                TKResultsButtonService.setShouldShowMenuButton(true);
                 $state.go('test.detail',{testID:nextqNumber});
             }
         };  
@@ -203,6 +204,7 @@ angular.module('starter.controllers', [])
                    $ionicHistory.nextViewOptions({
                       disableBack: true
                    });
+                   TKResultsButtonService.setShouldShowMenuButton(true);
                    $state.go('results');
                  } else {
                     // invalid response
@@ -226,8 +228,8 @@ angular.module('starter.controllers', [])
             }
         }
 }])
-.controller('ResultsCtrl', ['$scope', 'TKAnswersService', '$ionicHistory', '$state',
-    function($scope, TKAnswersService, $ionicHistory, $state) {
+.controller('ResultsCtrl', ['$scope', 'TKAnswersService', '$ionicHistory', '$state', 'TKResultsButtonService',
+    function($scope, TKAnswersService, $ionicHistory, $state, TKResultsButtonService) {
         $scope.menuButtonTapped = function()
         {        
              $ionicHistory.nextViewOptions({
@@ -270,9 +272,51 @@ angular.module('starter.controllers', [])
                pointHighlightFill: "#fff",
                pointHighlightStroke: "rgba(151,187,205,0.8)"
         }];
+        $scope.shouldShowButton = TKResultsButtonService.getShouldShowMenuButton();
+}])
+.controller('HistoryCtrl', ['$scope', 'ServerAnswersService', '$window', '$state', 'TKAnswersService', 'TKResultsButtonService',
+    function($scope, ServerAnswersService, $window, $state, TKAnswersService, TKResultsButtonService) {
+        $scope.tests = [];
+        performRequest();
         
+        $scope.goToResult = function(test)
+            {
+                    var answers = {
+                    "competing": test.competing,
+                    "collaborating": test.collaborating,
+                    "compromising": test.compromising,
+                    "avoiding": test.avoiding,
+                    "accommodating": test.accommodating
+                };
+                TKAnswersService.setAnswers(answers);
+                TKResultsButtonService.setShouldShowMenuButton(false);                
+                $state.go('results');
+            };
+        
+        function performRequest()
+        {
+            ServerAnswersService.all($window.localStorage['userID'], $window.localStorage['token'])
+            .then(function(response) {
+                if (response.status === 200) {
+                    $scope.tests = response.data;
+                } else {
+                    // invalid
+                    confirmPrompt();
+                }
+            }, function(response) {
+                // something went wrong
+                console.log(response);
+                confirmPrompt();
+            });
+        }
+        function confirmPrompt()
+        {
+           var response = confirm("The tests could not be retrieved at the moment, do you want to try again?");
+           if (response == true) {
+               performRequest();
+           }
+        }
         
 }]);
-
 
 

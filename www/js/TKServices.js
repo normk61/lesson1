@@ -40,5 +40,24 @@ angular.module('TKServicesModule', [])
     {
           return answerCategories;
     };
-
+    service.setAnswers = function(answers)
+    {
+        answerCategories = answers;
+    };
+})
+.service('TKResultsButtonService', function()
+{
+    var service = this;
+   
+    var shouldShowButton = false;
+   
+    service.setShouldShowMenuButton = function(show)
+    {
+        shouldShowButton = show;
+    };
+   
+    service.getShouldShowMenuButton = function()
+    {
+        return shouldShowButton;
+    };
 });

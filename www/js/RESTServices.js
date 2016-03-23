@@ -23,6 +23,7 @@ function ($http, ENDPOINT_URL) {
       });
     };
 }])
+
 .service('ServerQuestionService', ['$http', 'ENDPOINT_URL',
   function ($http,  ENDPOINT_URL) {
     var service = this,
@@ -36,6 +37,7 @@ function ($http, ENDPOINT_URL) {
       });
     };
   }])
+  
 .service('ServerAnswersService', ['$http', 'ENDPOINT_URL',
 function ($http, ENDPOINT_URL) {
   var service = this,
@@ -53,5 +55,12 @@ function ($http, ENDPOINT_URL) {
         }
      });
   };
+  service.all = function(userID, token)
+  {
+     return $http.get(getUrl()+"?filter[where][userID]="+userID,{
+        params: { access_token: token }
+     });
+  };
+  
 }]);
   
